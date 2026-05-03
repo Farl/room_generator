@@ -2,6 +2,47 @@ import * as THREE from "three";
 import { PlayerControls } from "./controls.js";
 import RoomGenerator from "./mazeGenerator.js";
 
+class LocalRoomSocket {
+  constructor() {
+    this.clientId = `local-${Math.random().toString(36).slice(2, 10)}`;
+    this.presence = {};
+    this.roomState = {};
+    this._presenceSubscribers = [];
+    this._roomStateSubscribers = [];
+  }
+
+  async initialize() {
+    return;
+  }
+
+  updatePresence(patch) {
+    const current = this.presence[this.clientId] || {};
+    this.presence[this.clientId] = { ...current, ...patch };
+    this._presenceSubscribers.forEach((callback) => callback(this.presence));
+  }
+
+  subscribePresence(callback) {
+    this._presenceSubscribers.push(callback);
+    callback(this.presence);
+    return () => {
+      this._presenceSubscribers = this._presenceSubscribers.filter((cb) => cb !== callback);
+    };
+  }
+
+  updateRoomState(patch) {
+    this.roomState = { ...this.roomState, ...patch };
+    this._roomStateSubscribers.forEach((callback) => callback(this.roomState));
+  }
+
+  subscribeRoomState(callback) {
+    this._roomStateSubscribers.push(callback);
+    callback(this.roomState);
+    return () => {
+      this._roomStateSubscribers = this._roomStateSubscribers.filter((cb) => cb !== callback);
+    };
+  }
+}
+
 async function main() {
   // Get username from Websim API if available, otherwise generate random name
   let playerName = `Player${Math.floor(Math.random() * 1000)}`;
@@ -25,8 +66,10 @@ async function main() {
   const safePlayerX = (Math.random() * 10) - 5;
   const safePlayerZ = (Math.random() * 10) - 5;
 
-  // Initialize WebsimSocket
-  const room = new WebsimSocket();
+  // Use Websim multiplayer when available; otherwise run in local single-player mode.
+  const room = typeof window.WebsimSocket === "function"
+    ? new window.WebsimSocket()
+    : new LocalRoomSocket();
   
   // Wait for initialization before using
   await room.initialize();

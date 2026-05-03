@@ -58,7 +58,7 @@ export class PlayerControls {
     this.camera.position.set(this.playerX, this.playerY + 1.2, this.playerZ);
     
     // Create audio for jump sound
-    this.jumpSound = new Audio('/Wood_jump3.wav.mp3');
+    this.jumpSound = new Audio('Wood_jump3.wav.mp3');
     this.jumpSound.volume = 0.5; // Set volume to 50%
     
     // Initialize controls based on device
