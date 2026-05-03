@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Maze Runner - Multiplayer 3D Game</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+        "seedrandom": "https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nipplejs@0.10.1/dist/nipplejs.min.js"></script>
+</head>
+<body>
+  <div id="game-container">
+    <div id="online-users" class="online-users">Online: 1</div>
+    <div class="crosshair"></div>
+    <div id="instructions" class="instructions">
+      Press 'R' to generate a new maze
+    </div>
+  </div>
+  <script src="mazeGenerator.js" type="module"></script>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
