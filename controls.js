@@ -78,12 +78,25 @@ export class PlayerControls {
   
   initializeDesktopControls() {
     this.controls = new PointerLockControls(this.camera, this.domElement);
+
+    const toggleInstructions = (visible) => {
+      document.querySelectorAll('.instructions').forEach((el) => {
+        el.style.display = visible ? 'block' : 'none';
+      });
+    };
     
-    // Add instructions for desktop
-    const instructionsDiv = document.createElement("div");
-    instructionsDiv.className = "instructions";
-    instructionsDiv.innerHTML = "Click to lock controls. <br>Use WASD to move, Space to jump, R to regenerate maze.";
-    document.getElementById('game-container').appendChild(instructionsDiv);
+    // Reuse existing instructions if present; otherwise create one.
+    const gameContainer = document.getElementById('game-container');
+    let instructionsDiv = document.getElementById('instructions');
+    if (!instructionsDiv && gameContainer) {
+      instructionsDiv = document.createElement("div");
+      instructionsDiv.id = 'instructions';
+      instructionsDiv.className = "instructions";
+      gameContainer.appendChild(instructionsDiv);
+    }
+    if (instructionsDiv) {
+      instructionsDiv.innerHTML = "Click to lock controls. <br>Use WASD to move, Space to jump, R to regenerate maze.";
+    }
     
     // Lock controls on click
     document.addEventListener('click', () => {
@@ -94,15 +107,11 @@ export class PlayerControls {
     
     // Listen for pointer lock changes
     this.controls.addEventListener('lock', () => {
-      if (document.querySelector(".instructions")) {
-        document.querySelector(".instructions").style.display = 'none';
-      }
+      toggleInstructions(false);
     });
 
     this.controls.addEventListener('unlock', () => {
-      if (document.querySelector(".instructions")) {
-        document.querySelector(".instructions").style.display = 'block';
-      }
+      toggleInstructions(true);
     });
     
     // Add rotation change listener to sync rotation even when not moving
